@@ -1,5 +1,0 @@
-
-interface IPage {
-  counter: number;
-  
-}
