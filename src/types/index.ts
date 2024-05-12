@@ -1,17 +1,17 @@
 export interface IViewItem {
-	id: number;
+	id: string;
 	name: string;
 	skill: string;
 	description: string;
 	image: string;
 	price: number;
-	handleOpenItem: Function;
-	render(item: IViewItem): HTMLElement;
-	setOpenHandler(handleOpenItem: Function): void;
+	// handleOpenItem: Function;
+	render(item: IItem): HTMLElement;
+	// setOpenHandler(handleOpenItem: Function): void;
 }
 
 export interface IItem {
-  id: number;
+  id: string;
   name: string;
   skill: string;
   description: string;
@@ -22,6 +22,12 @@ export interface IItem {
 export interface IBasketView {
   items: HTMLElement[];
   total: number;
+}
+
+export interface IBasketModel{
+  items: Map<string, number>;
+  add(id: string): void;
+  remove(id: string): void;
 }
 
 export interface IModel {
@@ -39,10 +45,12 @@ export interface IPopup {
 type PayWay = 'онлайн' | 'при получении';
 
 export interface IOrder {
+  items: string[];
   payWay: PayWay;
   address: string;
   phone: string;
   email: string;
+  total: number;
 }
 
 export interface IForm {
@@ -50,7 +58,21 @@ export interface IForm {
   errors: HTMLElement[];
 }
 
+export interface IFormState {
+  valid: boolean;
+  errors: string[];
+}
+
 export interface IPage {
   counter: HTMLElement;
-  catalog: HTMLElement;
+  basketContainer: HTMLElement;
+  catalog: HTMLElement[];
+}
+
+export interface ICardAction {
+  onClick(event: MouseEvent): void;
+}
+
+export interface ApiResponse {
+  items: IItem[];
 }
