@@ -1,23 +1,18 @@
-export interface IViewItem {
-	id: string;
-	name: string;
-	skill: string;
-	description: string;
-	image: string;
-	price: number;
-	// handleOpenItem: Function;
-	render(item: IItem): HTMLElement;
-	// setOpenHandler(handleOpenItem: Function): void;
-}
 
-export interface IItem {
+
+export interface IProduct {
   id: string;
-  name: string;
-  skill: string;
+  title: string;
+  category: string;
   description: string;
   image: string;
   price: number;
 }
+
+
+export type Category = 'другое' | 'кнопка' |  'софт-скилл' | 'дополнительное' | 'хард-скилл';
+
+export const NONE_PRICE = 'Бесценно';
 
 export interface IBasketView {
   items: HTMLElement[];
@@ -30,10 +25,9 @@ export interface IBasketModel{
   remove(id: string): void;
 }
 
-export interface IModel {
-  items: IItem[];
-  addItem(data: IItem): void;
-  getItem(id: number): IItem;
+export interface ICatalogModel {
+  items: IProduct[];
+  getItem(id: string): IProduct;
 }
 
 export interface IPopup {
@@ -66,7 +60,7 @@ export interface IFormState {
 export interface IPage {
   counter: HTMLElement;
   basketContainer: HTMLElement;
-  catalog: HTMLElement[];
+  catalog: HTMLElement;
 }
 
 export interface ICardAction {
@@ -74,5 +68,5 @@ export interface ICardAction {
 }
 
 export interface ApiResponse {
-  items: IItem[];
+  items: IProduct[];
 }

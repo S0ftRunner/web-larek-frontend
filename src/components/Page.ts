@@ -1,25 +1,24 @@
 import { IPage } from "../types";
+import { ensureElement } from "../utils/utils";
+import { Component } from "./base/Component";
+import { IEvents } from "./base/events";
 
-export class Page implements IPage {
+export class Page extends Component<IPage> {
+
+  protected _counter: HTMLElement;
   protected _catalog: HTMLElement;
   protected _basket: HTMLElement;
-  protected _counter: HTMLElement;
 
-  constructor(protected container: HTMLElement) {
-    this._catalog = this.container.querySelector('.gallery');
-    this._basket = this.container.querySelector('.header__basket');
-    this._counter = this.container.querySelector('.header__basket-counter');
+  constructor(container: HTMLElement, protected events: IEvents) {
+    super(container);
+    this._catalog = ensureElement<HTMLElement>('.gallery');
+    this._counter = ensureElement<HTMLElement>('.header__basket-counter');
+    this._basket = ensureElement<HTMLElement>('.basket');
   }
+
 
   set catalog(items: HTMLElement[]) {
     this._catalog.replaceChildren(...items);
   }
 
-  set counter(element: HTMLElement) {
-    this._counter = element;
-  }
-
-  set basketContainer(basketElement: HTMLElement) {
-    this._basket = basketElement;
-  }
 }

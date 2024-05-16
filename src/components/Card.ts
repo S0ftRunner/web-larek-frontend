@@ -1,61 +1,54 @@
-import { ICardAction, IItem, IViewItem } from "../types";
-import { ensureElement } from "../utils/utils";
-import { Component } from "./base/Component";
+import { Component } from './base/Component';
 
-export interface ICardConstructor {
-  new (template: HTMLTemplateElement): IViewItem;
+import { ensureElement } from '../utils/utils';
+
+import { IProduct, NONE_PRICE } from '../types/index';
+
+export class Card extends Component<IProduct> {
+	protected _title: HTMLElement;
+	protected _category: HTMLElement;
+	protected _image: HTMLImageElement;
+	protected _price: HTMLElement;
+
+	constructor(protected blockName: string, container: HTMLElement) {
+		super(container);
+		this._title = ensureElement<HTMLElement>(`.${blockName}__title`);
+		this._category = ensureElement<HTMLElement>(`.${blockName}__category`);
+		this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`);
+		this._price = ensureElement<HTMLElement>(`.${blockName}__price`);
+	}
+
+	set id(value: string) {
+		this.container.dataset.id = value;
+	}
+
+	get id(): string {
+		return this.container.dataset.id || '';
+	}
+
+	set title(value: string) {
+		this.setText(this._title, value);
+	}
+
+	get title(): string {
+		return this._title.textContent || '';
+	}
+
+	set image(value: string) {
+		this.setImage(this._image, value);
+	}
+
+	setPrice(value?: number) {
+		if (value === null) {
+			this.setText(this._price, NONE_PRICE);
+		} else {
+			this.setText(this._price, `${value} синапсов`);
+		}
+	}
 }
 
-export class Card extends Component<IViewItem> implements IViewItem {
-
-
-  protected itemElement: HTMLElement;
-
-  protected cardCategory: HTMLElement;
-  protected cardTitle: HTMLElement;
-  protected cardImage: HTMLImageElement;
-  protected cardPrice: HTMLElement;
-
-
-  constructor(protected blockName: string, container: HTMLElement, actions?: ICardAction){
-    super(container);
-    this.cardTitle = ensureElement<HTMLElement>(`.${blockName}__title`, container);
-    this.cardCategory = ensureElement<HTMLElement>(`.${blockName}__category`, container);
-    this.cardImage = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
-    this.cardPrice = ensureElement<HTMLElement>(`.${blockName}__price`, container);
-  }
-
-  set id(value: string) {
-    this.id = value;
-  }
-
-  set name(value: string) {
-    this.cardTitle.textContent = value;
-  }
-
-  set skill(value: string) {
-    this.cardCategory.textContent = value;
-  }
-
-  set description(value: string) {
-    this.description = value;
-  }
-
-  set image(value: string) {
-    this.cardTitle.textContent = value;
-  }
-
-  set price(value: number) {
-    this.cardPrice.textContent = String(value);
-  }
-
-  render(item: IItem): HTMLElement {
-      this.id = item.id;
-      this.name = item.name;
-      this.description = item.description;
-      this.price = item.price;
-      this.skill = item.skill;
-      this.image = item.image;
-      return this.itemElement;
-  }
+export class CatalogItem extends Card {
+	constructor(container: HTMLElement) {
+		super('card', container);
+	}
 }

@@ -1,26 +1,47 @@
 import './scss/styles.scss';
 
-import { Presenter } from './components/Presenter';
-import { Model } from './components/Model';
 import { Api } from './components/base/api';
+import { ApiResponse } from './types/index';
+import { CatalogModel } from './components/CatalogModel';
+import {cloneTemplate, ensureElement} from './utils/utils';
+import {EventEmitter} from './components/base/events';
 import { API_URL } from './utils/constants';
-import { ApiResponse, IItem } from './types';
-import { Page } from './components/Page';
-import {ensureElement} from './utils/utils';
-import { Card } from './components/Card';
+import {Page} from './components/Page';
+import {Card, CatalogItem} from './components/Card';
 
-const model = new Model();
+// TEMPLATES
+const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
+const cardBacketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const backetTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+
+const events = new EventEmitter();
+
 const api = new Api(API_URL);
+const page = new Page(document.body, events);
 
-const htmlPage = ensureElement<HTMLElement>('.page');
+const catalogModel = new CatalogModel({}, events);
 
-const page = new Page(htmlPage);
+api.get('/product').then((res: ApiResponse) => {
+	catalogModel.items = res.items;
+});
 
-api
-	.get('/product')
-	.then((res: ApiResponse) => {
-		model.items = res.items;
+console.log(catalogModel.items);
+
+
+events.on('items:changed', () => {
+	page.catalog = catalogModel.items.map(item => {
+		const card = new CatalogItem(cloneTemplate(cardCatalogTemplate));
+
+		return card.render({
+			id: item.id,
+			title: item.title,
+			category: item.category,
+			image: item.image,
+			description: item.description,
+			price: item.price,
+		})
 	})
-	.catch((err) => console.log(err));
-
-const presenter = new Presenter(model, page, Card);
+})
