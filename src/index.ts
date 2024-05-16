@@ -2,7 +2,7 @@ import './scss/styles.scss';
 
 import { Api } from './components/base/api';
 import { ApiResponse } from './types/index';
-import { CatalogModel } from './components/CatalogModel';
+import { AppState } from './components/AppState';
 import {cloneTemplate, ensureElement} from './utils/utils';
 import {EventEmitter} from './components/base/events';
 import { API_URL } from './utils/constants';
@@ -22,10 +22,10 @@ const events = new EventEmitter();
 const api = new Api(API_URL);
 const page = new Page(document.body, events);
 
-const catalogModel = new CatalogModel({}, events);
+const appData = new AppState({}, events);
 
 api.get('/product').then((res: ApiResponse) => {
-	catalogModel.items = res.items;
+	// catalogModel.items = res.items;
 });
 
 console.log(catalogModel.items);

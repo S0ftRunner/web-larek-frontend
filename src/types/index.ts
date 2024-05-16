@@ -25,7 +25,7 @@ export interface IBasketModel{
   remove(id: string): void;
 }
 
-export interface ICatalogModel {
+export interface IAppState {
   items: IProduct[];
   getItem(id: string): IProduct;
 }

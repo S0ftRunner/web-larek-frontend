@@ -1,7 +1,7 @@
-import { ICatalogModel, IProduct } from "../types";
+import { IAppState, IProduct } from "../types";
 import { Model } from './base/Model'
 
-export class CatalogModel extends  Model<ICatalogModel> {
+export class AppState extends  Model<IAppState> {
 
 	protected _items: IProduct[];
 
@@ -14,8 +14,5 @@ export class CatalogModel extends  Model<ICatalogModel> {
 			return product.id === id;
 		})
 	}
-
-
-
 }
 
