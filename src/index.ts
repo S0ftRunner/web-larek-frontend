@@ -1,13 +1,13 @@
 import './scss/styles.scss';
 
 import { Api } from './components/base/api';
-import { ApiResponse } from './types/index';
+import { ApiResponse, ICardItem } from './types/index';
 import { AppState } from './components/AppState';
-import {cloneTemplate, ensureElement} from './utils/utils';
-import {EventEmitter} from './components/base/events';
+import { cloneTemplate, ensureElement } from './utils/utils';
+import { EventEmitter } from './components/base/events';
 import { API_URL } from './utils/constants';
-import {Page} from './components/Page';
-import {Card, CatalogItem} from './components/Card';
+import { Page } from './components/Page';
+import { Card, CatalogItem } from './components/Card';
 
 // TEMPLATES
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
@@ -25,23 +25,21 @@ const page = new Page(document.body, events);
 const appData = new AppState({}, events);
 
 api.get('/product').then((res: ApiResponse) => {
-	// catalogModel.items = res.items;
+	appData.items = res.items as ICardItem[];
 });
 
-console.log(catalogModel.items);
-
+console.log(appData.items);
 
 events.on('items:changed', () => {
-	page.catalog = catalogModel.items.map(item => {
+	page.catalog = appData.items.map((item) => {
 		const card = new CatalogItem(cloneTemplate(cardCatalogTemplate));
 
 		return card.render({
-			id: item.id,
-			title: item.title,
 			category: item.category,
-			image: item.image,
+			title: item.title,
 			description: item.description,
+			image: item.image,
 			price: item.price,
-		})
-	})
-})
+		});
+	});
+});

@@ -1,12 +1,20 @@
 
 
-export interface IProduct {
+export interface ICardItem {
   id: string;
   title: string;
   category: string;
   description: string;
   image: string;
-  price: number;
+  price?: number;
+}
+
+export interface ICardViewItem {
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  price?: number;
 }
 
 
@@ -26,8 +34,8 @@ export interface IBasketModel{
 }
 
 export interface IAppState {
-  items: IProduct[];
-  getItem(id: string): IProduct;
+  cards: ICardItem[];
+  getItem(id: string): ICardItem;
 }
 
 export interface IPopup {
@@ -68,5 +76,5 @@ export interface ICardAction {
 }
 
 export interface ApiResponse {
-  items: IProduct[];
+  items: ICardItem[];
 }
