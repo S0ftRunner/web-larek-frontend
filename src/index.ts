@@ -66,6 +66,7 @@ events.on('preview:changed', (item: CardItem) => {
 	const card = new CardPreview(cloneTemplate(cardPreviewTemplate));
 	modal.render({
 		content: card.render({
+			category: item.category,
 			description: item.description,
 			title: item.title,
 			image: item.image,
