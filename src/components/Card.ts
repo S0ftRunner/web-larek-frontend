@@ -5,18 +5,33 @@ import { ensureElement } from '../utils/utils';
 import { Category, ICardViewItem, NONE_PRICE } from '../types/index';
 import { CDN_URL } from '../utils/constants';
 
+export interface ICardActions {
+	onClick: (event: MouseEvent) => void;
+}
+
 export class Card extends Component<ICardViewItem> {
 	protected _title: HTMLElement;
 	protected _category: HTMLElement;
-	protected _image: HTMLImageElement;
+	protected _image?: HTMLImageElement;
 	protected _price: HTMLElement;
+	protected _button?: HTMLButtonElement;
 
-	constructor(protected blockName: string, container: HTMLElement) {
+	constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
 		super(container);
 		this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
 		this._category = container.querySelector(`.${blockName}__category`);
+		this._button = container.querySelector(`.${blockName}__button`);
 		this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
 		this._price = container.querySelector(`.${blockName}__price`);
+
+		if (actions?.onClick) {
+			if (this._button) {
+					this._button.addEventListener('click', actions.onClick);
+			} else {
+					container.addEventListener('click', actions.onClick);
+			}
+	}
+
 	}
 
 	set title(value: string) {
@@ -41,12 +56,25 @@ export class Card extends Component<ICardViewItem> {
 
 	set category(value: Category) {
 		this._category.textContent = value;
-
 	}
 }
 
 export class CatalogItem extends Card {
-	constructor(container: HTMLElement) {
-		super('card', container);
+	constructor(container: HTMLElement, actions?: ICardActions) {
+		super('card', container, actions);
+	}
+
+}
+
+export class CardPreview extends Card{
+	protected _description: HTMLElement;
+
+	constructor(container: HTMLElement, actions?: ICardActions) {
+		super('card', container, actions);
+		this._description = ensureElement<HTMLElement>('.card__text', container);
+	}
+
+	set description(value: string){
+		this.setText(this._description, value);
 	}
 }

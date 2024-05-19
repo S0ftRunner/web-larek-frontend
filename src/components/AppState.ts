@@ -4,6 +4,7 @@ import { Model } from './base/Model';
 
 export class AppState extends Model<IAppState> {
 	protected _items: ICardItem[];
+	protected _preview: string | null;
 
 	set items(items: ICardItem[]) {
 		this._items = items.map((item) => new CardItem(item, this.events));
@@ -18,5 +19,11 @@ export class AppState extends Model<IAppState> {
 		return this._items.find((product) => {
 			return product.id === id;
 		});
+	}
+
+
+	setPreview(item: CardItem) {
+		this._preview = item.id;
+		this.emitChanges('preview:changed', item);
 	}
 }

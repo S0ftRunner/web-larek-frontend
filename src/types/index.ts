@@ -3,7 +3,7 @@
 export interface ICardItem {
   id: string;
   title: string;
-  category: string;
+  category: Category;
   description: string;
   image: string;
   price?: number;
@@ -11,7 +11,7 @@ export interface ICardItem {
 
 export interface ICardViewItem {
   title: string;
-  category: string;
+  category: Category;
   description: string;
   image: string;
   price?: number;
