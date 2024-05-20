@@ -16,7 +16,11 @@ export class Page extends Component<IPage> {
     this._catalog = ensureElement<HTMLElement>('.gallery');
     this._counter = ensureElement<HTMLElement>('.header__basket-counter');
     this._wrapper = ensureElement<HTMLElement>('.page__wrapper');
-    this._basket = ensureElement<HTMLElement>('.basket');
+    this._basket = ensureElement<HTMLElement>('.header__basket');
+
+    this._basket.addEventListener('click', () => {
+      this.events.emit('basket:open');
+    })
   }
 
 
@@ -30,7 +34,12 @@ export class Page extends Component<IPage> {
     } else {
         this._wrapper.classList.remove('page__wrapper_locked');
     }
-}
 
+  
+  }
+
+  set basketCounter(value: number) {
+    this._counter.textContent = value.toString();
+  }
 
 }

@@ -1,8 +1,9 @@
 import { Component } from './base/Component';
 
 import { ensureElement } from '../utils/utils';
+import { CategoryMap } from '../utils/constants';
 
-import { Category, ICardViewItem, NONE_PRICE } from '../types/index';
+import { Category, ICardViewItem, NONE_PRICE} from '../types/index';
 import { CDN_URL } from '../utils/constants';
 
 export interface ICardActions {
@@ -56,6 +57,7 @@ export class Card extends Component<ICardViewItem> {
 
 	set category(value: Category) {
 		this._category.textContent = value;
+		this._category.classList.add(CategoryMap[value]);
 	}
 }
 
