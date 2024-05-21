@@ -1,5 +1,3 @@
-
-
 export interface ICardItem {
 	id: string;
 	title: string;
@@ -25,11 +23,11 @@ export interface IBasketView {
 }
 
 export interface ICardBasketItem extends ICardItem {
-  index: number;
+	index: number;
 }
 
-export interface ICardBasketActions{
-  onClick: (event: MouseEvent) => void;
+export interface ICardBasketActions {
+	onClick: (event: MouseEvent) => void;
 }
 
 export type Category =
@@ -44,31 +42,43 @@ export interface IAppState {
 	getItem(id: string): ICardItem;
 }
 
-export interface IPopup {
-	close(): void;
-	open(): void;
-	content: HTMLElement;
-}
 
-type PayWay = 'онлайн' | 'при получении';
 
-export interface IOrder {
-	items: string[];
-	payWay: PayWay;
-	address: string;
-	phone: string;
+export interface IContacts {
 	email: string;
-	total: number;
+	phone: string;
 }
+
+export interface IOrderForm {
+	payment: string;
+	address: string;
+	email: string;
+  phone: string;
+}
+
+export interface IOrderModel {
+	items: string[];
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+	total: number;
+};
 
 export interface IForm {
-	submit: HTMLButtonElement;
-	errors: HTMLElement[];
+	valid: boolean;
+	errors: string[];
 }
 
 export interface IFormState {
 	valid: boolean;
 	errors: string[];
+}
+
+export type FormErrors = Partial<Record<keyof IOrderModel, string>>;
+
+export interface IModal {
+	content: HTMLElement;
 }
 
 export interface IPage {

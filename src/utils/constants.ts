@@ -12,3 +12,5 @@ export const CategoryMap = {
 	дополнительное: 'card__category_additional',
 	'хард-скил': 'card__category_hard',
 };
+
+export const BUTTON_ACTIVE = 'button_alt-active';

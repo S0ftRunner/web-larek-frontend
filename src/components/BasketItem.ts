@@ -1,4 +1,4 @@
-import { ICardBasketItem, ICardBasketActions } from '../types';
+import { ICardBasketItem, ICardBasketActions, NONE_PRICE } from '../types';
 import { Component } from './base/Component';
 
 export class BasketItem extends Component<ICardBasketItem> {
@@ -20,11 +20,10 @@ export class BasketItem extends Component<ICardBasketItem> {
 		this._index = container.querySelector('.basket__item-index');
 
 		if (this._button) {
-      this._button.addEventListener('click', (evt) => {
-        this.container.remove();
-        actions?.onClick(evt);
-      });
-      
+			this._button.addEventListener('click', (evt) => {
+				this.container.remove();
+				actions?.onClick(evt);
+			});
 		}
 	}
 
@@ -37,6 +36,10 @@ export class BasketItem extends Component<ICardBasketItem> {
 	}
 
 	set price(value: number) {
-		this._price.textContent = `${value} синапсов`;
+		if (value === null) {
+			this._price.textContent = NONE_PRICE;
+		} else {
+			this._price.textContent = `${value} синапсов`;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 
-import { Api } from './components/base/api';
-import { ApiResponse, ICardItem } from './types/index';
+import { Api, ApiListResponse } from './components/base/api';
+import { ApiResponse, ICardItem, IContacts, IOrderForm } from './types/index';
 import { AppState } from './components/AppState';
 import { cloneTemplate, ensureElement, createElement } from './utils/utils';
 import { EventEmitter } from './components/base/events';
@@ -12,6 +12,9 @@ import { CardItem } from './components/CardItem';
 import { Modal } from './components/Modal';
 import { Basket } from './components/Basket';
 import { BasketItem } from './components/BasketItem';
+import { Order } from './components/Order';
+import { Contacts } from './components/Contacts';
+import { Success } from './components/Success';
 
 // TEMPLATES
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
@@ -20,6 +23,7 @@ const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 const events = new EventEmitter();
 
@@ -30,20 +34,28 @@ const appData = new AppState({}, events);
 
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 
+const order = new Order('order', cloneTemplate(orderTemplate), events);
+const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+const success = new Success('order-success', cloneTemplate(successTemplate), {
+	onClick: () => {
+		events.emit('modal:close');
+		modal.close();
+	},
+});
+
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
-// get products data
+// получаем товары
 api
 	.get('/product')
 	.then((res: ApiResponse) => {
-		console.log(res.items);
 		appData.items = res.items as ICardItem[];
 	})
 	.catch((err) => console.log(err));
 
 // EVENTS
 
-// render catalog view
+// рендерим карточки
 events.on('items:changed', () => {
 	page.catalog = appData.items.map((item) => {
 		const card = new CatalogItem(cloneTemplate(cardCatalogTemplate), {
@@ -119,18 +131,86 @@ events.on('basket:open', () => {
 events.on('basket:delete', (item: CardItem) => {
 	appData.deleteItemFromBasket(item.id);
 	page.basketCounter = appData.basketTotalItems;
-	basket.price = appData.basketTotalCost;
-	basket.refreshIndices();
+	basket.total = appData.basketTotalCost;
+	basket.renderNewIndexes();
 	if (appData.basket.length <= 0) {
 		basket.disableButton();
 	}
-})
+});
 
-// блокировка страницы при открытии модального окна
+events.on('order:open', () => {
+	modal.render({
+		content: order.render({
+			address: '',
+			valid: false,
+			errors: [],
+		}),
+	});
+});
+
+events.on('formErrorsOrder:change', (errors: Partial<IOrderForm>) => {
+	const { payment, address } = errors;
+	order.valid = !payment && !address;
+	console.log(address);
+	order.errors = Object.values({ payment, address })
+		.filter((i) => !!i)
+		.join('; ');
+});
+
+events.on('formErrorsContacts:change', (errors: Partial<IOrderForm>) => {
+	const { email, phone } = errors;
+	contacts.valid = !email && !phone;
+	contacts.errors = Object.values({ phone, email })
+		.filter((i) => !!i)
+		.join('; ');
+});
+
+events.on(
+	'orderInput:change',
+	(data: { field: keyof IOrderForm; value: string }) => {
+		appData.setOrderField(data.field, data.value);
+	}
+);
+
+events.on('order:submit', () => {
+	appData.order.total = appData.basketTotalCost;
+	appData.setItems();
+	modal.render({
+		content: contacts.render({
+			valid: false,
+			errors: [],
+		}),
+	});
+});
+
+events.on('contacts:submit', () => {
+	api
+		.post('/order', appData.order)
+		.then((res) => {
+			events.emit('order:success', res);
+			appData.clearBasket();
+			appData.refreshOrder();
+			order.disableButtons();
+			page.basketCounter = 0;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
+events.on('order:success', (res: ApiListResponse<string>) => {
+	modal.render({
+		content: success.render({
+			description: res.total,
+		}),
+	});
+});
+
 events.on('modal:open', () => {
 	page.locked = true;
 });
 
 events.on('modal:close', () => {
+	appData.refreshOrder();
 	page.locked = false;
 });

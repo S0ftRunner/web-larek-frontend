@@ -32,15 +32,12 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-  set price(value: number) {
-    this.setText(this._total, `${value} синапсов`);
-  }
 
 	set total(value: number) {
 		this.setText(this._total, `${value} синапсов`);
 	}
 
-  refreshIndices() {
+  renderNewIndexes() {
     Array.from(this._list.children).forEach(
       (item, index) =>
       (item.querySelector(`.basket__item-index`)!.textContent = (
