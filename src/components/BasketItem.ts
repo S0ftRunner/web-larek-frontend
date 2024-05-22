@@ -1,4 +1,5 @@
-import { ICardBasketItem, ICardBasketActions, NONE_PRICE } from '../types';
+import { ICardBasketItem, ICardBasketActions } from '../types';
+import { NONE_PRICE } from '../utils/constants';
 import { Component } from './base/Component';
 
 export class BasketItem extends Component<ICardBasketItem> {

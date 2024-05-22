@@ -7,10 +7,10 @@ import { cloneTemplate, ensureElement, createElement } from './utils/utils';
 import { EventEmitter } from './components/base/events';
 import { API_URL } from './utils/constants';
 import { Page } from './components/Page';
-import { Card, CardPreview, CatalogItem } from './components/Card';
+import { CardPreview, CatalogItem } from './components/Card';
 import { CardItem } from './components/CardItem';
 import { Modal } from './components/Modal';
-import { Basket } from './components/Basket';
+import { BasketView } from './components/BasketView';
 import { BasketItem } from './components/BasketItem';
 import { Order } from './components/Order';
 import { Contacts } from './components/Contacts';
@@ -32,7 +32,7 @@ const page = new Page(document.body, events);
 
 const appData = new AppState({}, events);
 
-const basket = new Basket(cloneTemplate(basketTemplate), events);
+const basket = new BasketView(cloneTemplate(basketTemplate), events);
 
 const order = new Order('order', cloneTemplate(orderTemplate), events);
 const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
@@ -151,7 +151,6 @@ events.on('order:open', () => {
 events.on('formErrorsOrder:change', (errors: Partial<IOrderForm>) => {
 	const { payment, address } = errors;
 	order.valid = !payment && !address;
-	console.log(address);
 	order.errors = Object.values({ payment, address })
 		.filter((i) => !!i)
 		.join('; ');

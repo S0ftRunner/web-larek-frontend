@@ -3,7 +3,7 @@ import { IBasketView } from '../types/index';
 import { EventEmitter } from './base/events';
 import { ensureElement, createElement } from '../utils/utils';
 
-export class Basket extends Component<IBasketView> {
+export class BasketView extends Component<IBasketView> {
 	protected _list: HTMLElement;
 	protected _total: HTMLElement;
 	protected _button: HTMLButtonElement;
@@ -26,30 +26,26 @@ export class Basket extends Component<IBasketView> {
 	set items(items: HTMLElement[]) {
 		if (items.length) {
 			this._list.replaceChildren(...items);
-      this._button.disabled = false;
+			this._button.disabled = false;
 		} else {
-      this._button.disabled = true;
+			this._button.disabled = true;
 		}
 	}
-
 
 	set total(value: number) {
 		this.setText(this._total, `${value} синапсов`);
 	}
 
-  renderNewIndexes() {
-    Array.from(this._list.children).forEach(
-      (item, index) =>
-      (item.querySelector(`.basket__item-index`)!.textContent = (
-        index + 1
-      ).toString())
-    );
-  }
+	renderNewIndexes() {
+		Array.from(this._list.children).forEach(
+			(item, index) =>
+				(item.querySelector(`.basket__item-index`)!.textContent = (
+					index + 1
+				).toString())
+		);
+	}
 
-  disableButton() {
-    this._button.disabled = true;
-  }
-
-
-
+	disableButton() {
+		this._button.disabled = true;
+	}
 }

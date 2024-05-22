@@ -1,3 +1,5 @@
+import { CardItem } from "../components/CardItem";
+
 export interface ICardItem {
 	id: string;
 	title: string;
@@ -15,7 +17,6 @@ export interface ICardViewItem {
 	price?: number;
 }
 
-export const NONE_PRICE = 'Бесценно';
 
 export interface IBasketView {
 	items: HTMLElement[];
@@ -39,10 +40,17 @@ export type Category =
 
 export interface IAppState {
 	cards: ICardItem[];
-	getItem(id: string): ICardItem;
+	setItems: () => void;
+	order: IOrderModel;
+	setPreview: (item: CardItem) => void;
+	addToBasket: (value: CardItem) => void;
+	setOrderField: (field: keyof IOrderForm, value: string) => void;
+	validateContacts: () => boolean;
+	validateOrder: () => boolean;
+	clearBaslet: () => void;
+	deleteItemFromBasket: (id: string) => void;
+	refreshOrder: () => void; 
 }
-
-
 
 export interface IContacts {
 	email: string;
@@ -53,7 +61,7 @@ export interface IOrderForm {
 	payment: string;
 	address: string;
 	email: string;
-  phone: string;
+	phone: string;
 }
 
 export interface IOrderModel {
@@ -63,7 +71,7 @@ export interface IOrderModel {
 	email: string;
 	phone: string;
 	total: number;
-};
+}
 
 export interface IForm {
 	valid: boolean;

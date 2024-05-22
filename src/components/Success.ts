@@ -28,7 +28,7 @@ export class Success extends Component<ISuccess> {
 	}
 
 	set description(value: number) {
-    console.log('установилась цена');
+		console.log('установилась цена');
 		this._description.textContent = `Списано ${value} синапсов`;
 	}
 }

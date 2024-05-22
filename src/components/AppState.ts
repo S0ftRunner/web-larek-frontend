@@ -32,15 +32,9 @@ export class AppState extends Model<IAppState> {
 		return this._items;
 	}
 
-	getItem(id: string): ICardItem {
-		return this._items.find((product) => {
-			return product.id === id;
-		});
-	}
-
 	setItems() {
-    this.order.items = this.basket.map(item => item.id)
-  }
+		this.order.items = this.basket.map((item) => item.id);
+	}
 
 	setPreview(item: CardItem) {
 		this._preview = item.id;
@@ -62,7 +56,7 @@ export class AppState extends Model<IAppState> {
 		}
 	}
 
-	protected validateContacts() {
+	protected validateContacts(): boolean {
 		const errors: typeof this.formErrors = {};
 		if (!this.order.phone) {
 			errors.phone = 'Необходимо указать телефон';
@@ -77,7 +71,7 @@ export class AppState extends Model<IAppState> {
 		return Object.keys(errors).length === 0;
 	}
 
-	protected validateOrder() {
+	protected validateOrder(): boolean {
 		const errors: typeof this.formErrors = {};
 
 		if (!this.order.payment) {

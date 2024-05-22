@@ -1,9 +1,7 @@
 export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 
-export const settings = {
-
-};
+export const settings = {};
 
 export const CategoryMap = {
 	другое: 'card__category_other',
@@ -14,3 +12,4 @@ export const CategoryMap = {
 };
 
 export const BUTTON_ACTIVE = 'button_alt-active';
+export const NONE_PRICE = 'Бесценно';

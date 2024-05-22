@@ -19,7 +19,7 @@ export class Order extends Form<IOrderForm> {
 
 		if (this._online) {
 			this._online.addEventListener('click', () => {
-        console.log('нажалось на онлайн');
+				console.log('нажалось на онлайн');
 				this._online.classList.add(BUTTON_ACTIVE);
 				this._offline.classList.remove(BUTTON_ACTIVE);
 				this.onInputChange('payment', 'online');
@@ -28,17 +28,16 @@ export class Order extends Form<IOrderForm> {
 
 		if (this._offline) {
 			this._offline.addEventListener('click', () => {
-        console.log('нажалось на офлайн');
+				console.log('нажалось на офлайн');
 				this._offline.classList.add(BUTTON_ACTIVE);
-        this._online.classList.remove(BUTTON_ACTIVE);
-        this.onInputChange('payment', 'offline');
+				this._online.classList.remove(BUTTON_ACTIVE);
+				this.onInputChange('payment', 'offline');
 			});
 		}
 	}
 
-
-  disableButtons() {
-    this._online.classList.remove(BUTTON_ACTIVE);
-    this._offline.classList.remove(BUTTON_ACTIVE);
-  }
+	disableButtons() {
+		this._online.classList.remove(BUTTON_ACTIVE);
+		this._offline.classList.remove(BUTTON_ACTIVE);
+	}
 }
