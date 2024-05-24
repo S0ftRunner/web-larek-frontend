@@ -5,26 +5,25 @@ import {
 	IOrderForm,
 	IOrderModel,
 } from '../types';
-import { CardItem } from './CardItem';
 import { Model } from './base/Model';
 
 export class AppState extends Model<IAppState> {
 	protected _items: ICardItem[];
 	protected _preview: string | null;
-	protected _basket: CardItem[] = [];
+	protected _basket: ICardItem[] = [];
 	order: IOrderModel = {
-		items: [],
 		address: '',
 		payment: '',
-		total: null,
 		phone: '',
 		email: '',
 	};
 
+	protected finalOrder = {};
+
 	protected formErrors: FormErrors = {};
 
 	set items(items: ICardItem[]) {
-		this._items = items.map((item) => new CardItem(item, this.events));
+		this._items = items.map((item) => item);
 		this.emitChanges('items:changed', { catalog: this._items });
 	}
 
@@ -32,16 +31,12 @@ export class AppState extends Model<IAppState> {
 		return this._items;
 	}
 
-	setItems() {
-		this.order.items = this.basket.map((item) => item.id);
-	}
-
-	setPreview(item: CardItem) {
+	setPreview(item: ICardItem) {
 		this._preview = item.id;
 		this.emitChanges('preview:changed', item);
 	}
 
-	addToBasket(value: CardItem) {
+	addToBasket(value: ICardItem) {
 		this._basket.push(value);
 	}
 
@@ -91,7 +86,7 @@ export class AppState extends Model<IAppState> {
 		return this._basket.length;
 	}
 
-	get basket(): CardItem[] {
+	get basket(): ICardItem[] {
 		return this._basket;
 	}
 
@@ -113,10 +108,8 @@ export class AppState extends Model<IAppState> {
 
 	refreshOrder() {
 		this.order = {
-			items: [],
 			address: '',
 			payment: '',
-			total: null,
 			phone: '',
 			email: '',
 		};

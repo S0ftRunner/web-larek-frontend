@@ -13,7 +13,7 @@
 - src/pages/index.html — HTML-файл главной страницы
 - src/types/index.ts — файл с типами
 - src/index.ts — точка входа приложения
-- src/styles/styles.scss — корневой файл стилей
+- src/scss/styles.scss — корневой файл стилей
 - src/utils/constants.ts — файл с константами
 - src/utils/utils.ts — файл с утилитами
 
@@ -134,14 +134,11 @@ export class Card extends Component<ICardViewItem> {
 }
 ```
 
-В одном файле с этим классом будут присутствовать два его наследника, они будут отвечать за разный рендеринг данных. То есть, класс `CatalogItem` будет отвечать за рендер карточки на главной странице, а `CardPreview` будет отвечать за рендер карточки в модальном окне. Отдельно нужен `CardPreview`, потому что в модальном окне карточки добавляется и описание карточки товара.
+В одном файле с этим классом будет присутствовать его наследник, он будет отвечать за рендеринг данных на модальном окне. `CardPreview` будет отвечать за рендер карточки в модальном окне. Отдельно нужен `CardPreview`, потому что в модальном окне карточки добавляется и описание карточки товара.
 
 Вот как выглядят данные классы:
 
 ```ts
-export class CatalogItem extends Card {
-	constructor(container: HTMLElement, actions?: ICardActions) {}
-}
 
 export class CardPreview extends Card{
 	// описание карточки
@@ -187,19 +184,10 @@ export class BasketView extends Component<IBasketView> {
 Данный класс реализует View для элемента в корзине товара. Выглядит следующим образом:
 
 ```ts
-export class BasketItem extends Component<ICardBasketItem> {
+export class CardBasketItem extends Card {
 
 	// индекс товара
 	protected _index: HTMLElement;
-
-	// название товара
-	protected _title: HTMLElement;
-
-	//  цена товара
-	protected _price: HTMLElement;
-
-	// кнопка
-	protected _button: HTMLButtonElement;
 
 	constructor(
 		protected blockName: string,
@@ -207,14 +195,8 @@ export class BasketItem extends Component<ICardBasketItem> {
 		actions?: ICardBasketActions
 	) {}
 
-	// сеттер названия
-	set title(value: string) {}
-
 	// сеттер индекса
 	set index(value: number) {}
-
-	// сеттер цены
-	set price(value: number) {}
 }
 
 ```
@@ -283,7 +265,7 @@ export class Page extends Component<IPage> {
 
 ### 6. Класс `Form`
 
-Данный класс будет отвечать за работу форм на нашем сайте. От данного класса у нас будут наследоваться `Order` и `Contacts`. Он будет выглядеть следующим образом:
+Данный класс будет отвечать за работу форм на нашем сайте. От данного класса у нас будет наследоваться `Order`. Он будет выглядеть следующим образом:
 
 ```ts
 export class Form<T> extends Component<IFormState> {
@@ -332,17 +314,7 @@ export class Order extends Form<IOrderForm> {
 }
 ```
 
-### 8. Класс `Contacts`
-
-Данный класс также наследуется от класса `Form`. Дополнительных полей не имеет. Выглядит следующим образом:
-
-```ts
-export class Contacts extends Form<IContacts> {
-	constructor(container: HTMLFormElement, events: IEvents) {}
-}
-```
-
-### 9. Класс `Success`
+### 8. Класс `Success`
 
 Данный класс в нашем сайте нужен для дальнейшего его отображения в модальном окне. Он нам дает информацию о том, что покупка прошла успешно. Его реализация:
 

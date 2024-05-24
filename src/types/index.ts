@@ -1,12 +1,13 @@
-import { CardItem } from "../components/CardItem";
+import { Model } from "../components/base/Model";
 
-export interface ICardItem {
+export interface ICardItem extends Model<ICardItem> {
 	id: string;
 	title: string;
 	category: Category;
 	description: string;
 	image: string;
 	price?: number;
+	// selected: boolean;
 }
 
 export interface ICardViewItem {
@@ -15,6 +16,7 @@ export interface ICardViewItem {
 	description: string;
 	image: string;
 	price?: number;
+	index?: number;
 }
 
 
@@ -42,8 +44,8 @@ export interface IAppState {
 	cards: ICardItem[];
 	setItems: () => void;
 	order: IOrderModel;
-	setPreview: (item: CardItem) => void;
-	addToBasket: (value: CardItem) => void;
+	setPreview: (item: ICardItem) => void;
+	addToBasket: (value: ICardItem) => void;
 	setOrderField: (field: keyof IOrderForm, value: string) => void;
 	validateContacts: () => boolean;
 	validateOrder: () => boolean;
@@ -65,12 +67,10 @@ export interface IOrderForm {
 }
 
 export interface IOrderModel {
-	items: string[];
 	payment: string;
 	address: string;
 	email: string;
 	phone: string;
-	total: number;
 }
 
 export interface IForm {

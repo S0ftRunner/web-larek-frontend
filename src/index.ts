@@ -7,13 +7,11 @@ import { cloneTemplate, ensureElement, createElement } from './utils/utils';
 import { EventEmitter } from './components/base/events';
 import { API_URL } from './utils/constants';
 import { Page } from './components/Page';
-import { CardPreview, CatalogItem } from './components/Card';
-import { CardItem } from './components/CardItem';
+import { CardPreview, Card } from './components/Card';
 import { Modal } from './components/Modal';
 import { BasketView } from './components/BasketView';
-import { BasketItem } from './components/BasketItem';
+import { CardBasketItem } from './components/CardBasketItem';
 import { Order } from './components/Order';
-import { Contacts } from './components/Contacts';
 import { Success } from './components/Success';
 
 // TEMPLATES
@@ -35,7 +33,7 @@ const appData = new AppState({}, events);
 const basket = new BasketView(cloneTemplate(basketTemplate), events);
 
 const order = new Order('order', cloneTemplate(orderTemplate), events);
-const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+const contacts = new Order('order', cloneTemplate(contactsTemplate), events);
 const success = new Success('order-success', cloneTemplate(successTemplate), {
 	onClick: () => {
 		events.emit('modal:close');
@@ -58,7 +56,7 @@ api
 // рендерим карточки
 events.on('items:changed', () => {
 	page.catalog = appData.items.map((item) => {
-		const card = new CatalogItem(cloneTemplate(cardCatalogTemplate), {
+		const card = new Card('card', cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit('card:select', item),
 		});
 
@@ -73,12 +71,12 @@ events.on('items:changed', () => {
 });
 
 // Событие на выбор карточки
-events.on('card:select', (item: CardItem) => {
+events.on('card:select', (item: ICardItem) => {
 	appData.setPreview(item);
 });
 
 // Показ карточки
-events.on('preview:changed', (item: CardItem) => {
+events.on('preview:changed', (item: ICardItem) => {
 	const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => {
 			events.emit('card:toBasket', item);
@@ -95,15 +93,16 @@ events.on('preview:changed', (item: CardItem) => {
 	});
 });
 
-events.on('card:toBasket', (item: CardItem) => {
+events.on('card:toBasket', (item: ICardItem) => {
 	appData.addToBasket(item);
+	
 	page.basketCounter = appData.basketTotalItems;
 	modal.close();
 });
 
 events.on('basket:open', () => {
 	const basketItems = appData.basket.map((item, idx) => {
-		const basketItem = new BasketItem(
+		const basketItem = new CardBasketItem(
 			'card',
 			cloneTemplate(cardBasketTemplate),
 			{
@@ -128,7 +127,7 @@ events.on('basket:open', () => {
 	});
 });
 
-events.on('basket:delete', (item: CardItem) => {
+events.on('basket:delete', (item: ICardItem) => {
 	appData.deleteItemFromBasket(item.id);
 	page.basketCounter = appData.basketTotalItems;
 	basket.total = appData.basketTotalCost;
@@ -172,8 +171,6 @@ events.on(
 );
 
 events.on('order:submit', () => {
-	appData.order.total = appData.basketTotalCost;
-	appData.setItems();
 	modal.render({
 		content: contacts.render({
 			valid: false,

@@ -12,7 +12,7 @@ export interface ICardActions {
 
 export class Card extends Component<ICardViewItem> {
 	protected _title: HTMLElement;
-	protected _category: HTMLElement;
+	protected _category?: HTMLElement;
 	protected _image?: HTMLImageElement;
 	protected _price: HTMLElement;
 	protected _button?: HTMLButtonElement;
@@ -26,10 +26,8 @@ export class Card extends Component<ICardViewItem> {
 		this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
 		this._category = container.querySelector(`.${blockName}__category`);
 		this._button = container.querySelector(`.${blockName}__button`);
-		this._image = ensureElement<HTMLImageElement>(
-			`.${blockName}__image`,
-			container
-		);
+
+		this._image = container.querySelector(`.${blockName}__image`);
 		this._price = container.querySelector(`.${blockName}__price`);
 
 		if (actions?.onClick) {
@@ -64,12 +62,6 @@ export class Card extends Component<ICardViewItem> {
 	set category(value: Category) {
 		this._category.textContent = value;
 		this._category.classList.add(CategoryMap[value]);
-	}
-}
-
-export class CatalogItem extends Card {
-	constructor(container: HTMLElement, actions?: ICardActions) {
-		super('card', container, actions);
 	}
 }
 
