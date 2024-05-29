@@ -28,17 +28,9 @@ export class BasketView extends Component<IBasketView> {
 		this._button.disabled = items.length ? false : true;
 	}
 
+
 	set total(value: number) {
 		this.setText(this._total, `${value} синапсов`);
-	}
-
-	renderNewIndexes() {
-		Array.from(this._list.children).forEach(
-			(item, index) =>
-				(item.querySelector(`.basket__item-index`)!.textContent = (
-					index + 1
-				).toString())
-		);
 	}
 
 	disableButton() {

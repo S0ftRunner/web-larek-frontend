@@ -11,12 +11,12 @@ export interface ICardActions {
 }
 
 export class Card extends Component<ICardViewItem> {
-	protected _title: HTMLElement;
+	protected _title?: HTMLElement;
 	protected _category?: HTMLElement;
 	protected _image?: HTMLImageElement;
 	protected _price: HTMLElement;
 	protected _button?: HTMLButtonElement;
-	
+
 	constructor(
 		protected blockName: string,
 		container: HTMLElement,
@@ -81,5 +81,16 @@ export class CardPreview extends Card {
 
 	set description(value: string) {
 		this.setText(this._description, value);
+	}
+
+	set price(value: number | null) {
+		if (value === null) {
+			this.setText(this._price, NONE_PRICE);
+			this._button.disabled = true;
+			this._button.textContent = 'Не продается';
+		} else {
+			this.setText(this._price, `${value} синапсов`);
+			this._button.disabled = false;
+		}
 	}
 }

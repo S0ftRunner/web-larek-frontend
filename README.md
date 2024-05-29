@@ -295,7 +295,7 @@ export class Form<T> extends Component<IFormState> {
 Данный класс наследуется от класса `Form`. Содержит дополнительные элементы, такие как кнопки. Данный класс выглядит так:
 
 ```ts
-export class Order extends Form<IOrderForm> {
+export class Order extends Form<IOrderModel> {
 
 	// кнопка для оплаты по карте
 	protected _online: HTMLButtonElement;
@@ -396,7 +396,7 @@ export class AppState extends Model<IAppState> {
 	addToBasket(value: CardItem) {}
 
 	// установка полей заказа
-	setOrderField(field: keyof IOrderForm, value: string) {}
+	setOrderField(field: keyof IOrderModel, value: string) {}
 
 	// валидируемость контактов
 	protected validateContacts() {}
@@ -471,7 +471,7 @@ export interface IAppState {
 	order: IOrderModel;
 	setPreview: (item: CardItem) => void;
 	addToBasket: (value: CardItem) => void;
-	setOrderField: (field: keyof IOrderForm, value: string) => void;
+	setOrderField: (field: keyof IOrderModel, value: string) => void;
 	validateContacts: () => boolean;
 	validateOrder: () => boolean;
 	clearBaslet: () => void;
@@ -483,21 +483,11 @@ export interface IContacts {
 	email: string;
 	phone: string;
 }
-
-export interface IOrderForm {
-	payment: string;
-	address: string;
-	email: string;
-	phone: string;
-}
-
 export interface IOrderModel {
-	items: string[];
 	payment: string;
 	address: string;
 	email: string;
 	phone: string;
-	total: number;
 }
 
 export interface IForm {

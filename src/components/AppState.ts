@@ -92,6 +92,10 @@ export class AppState extends Model<IAppState> {
 		return this._basket; 
 	}
 
+	set basket(products: ICardItem[]) {
+		this._basket = products;
+	}
+
 	get basketTotalCost(): number {
 		let total = 0;
 		this._basket.forEach((item) => {

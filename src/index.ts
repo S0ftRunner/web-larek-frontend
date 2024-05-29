@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 
 import { Api, ApiListResponse } from './components/base/Api';
-import { ApiResponse, ICardItem, IOrderModel} from './types/index';
+import { ApiResponse, ICardItem, IOrderModel } from './types/index';
 import { AppState } from './components/AppState';
 import { cloneTemplate, ensureElement, createElement } from './utils/utils';
 import { EventEmitter } from './components/base/Events';
@@ -103,7 +103,7 @@ events.on('card:toBasket', (item: ICardItem) => {
 	modal.close();
 });
 
-events.on('basket:open', () => { 
+events.on('basket:open', () => {
 	const basketItems = appData.basket.map((item, idx) => {
 		console.log(item);
 		const basketItem = new CardBasketItem(
@@ -136,7 +136,30 @@ events.on('basket:delete', (item: ICardItem) => {
 	item.selected = false;
 	page.basketCounter = appData.basketTotalItems;
 	basket.total = appData.basketTotalCost;
-	basket.renderNewIndexes();
+
+	const basketItems = appData.basket.map((item, idx) => {
+		console.log(item);
+		const basketItem = new CardBasketItem(
+			'card',
+			cloneTemplate(cardBasketTemplate),
+			{
+				onClick: () => {
+					events.emit('basket:delete', item);
+				},
+			}
+		);
+
+		return basketItem.render({
+			price: item.price,
+			title: item.title,
+			description: item.description,
+			index: idx + 1,
+		});
+
+	});
+	basket.items = basketItems;
+
+
 	if (appData.basket.length <= 0) {
 		basket.disableButton();
 	}
@@ -199,9 +222,6 @@ events.on('contacts:submit', () => {
 		})
 		.catch((err) => {
 			console.log(err);
-			// на случай, если будет выбран товар за "Бесценно", чтобы все равно очистилась корзина
-			appData.clearBasket();
-			page.basketCounter = 0;
 		});
 });
 
@@ -222,3 +242,6 @@ events.on('modal:close', () => {
 	order.disableButtons();
 	page.locked = false;
 });
+
+
+
