@@ -1,9 +1,9 @@
-import { IOrderForm } from '../types';
+import { IOrderModel } from '../types';
 import { IEvents } from './base/events';
 import { Form } from './Form';
 import { BUTTON_ACTIVE } from '../utils/constants';
 
-export class Order extends Form<IOrderForm> {
+export class Order extends Form<IOrderModel> {
 	protected _online: HTMLButtonElement;
 	protected _offline: HTMLButtonElement;
 
@@ -35,9 +35,23 @@ export class Order extends Form<IOrderForm> {
 			});
 		}
 	}
-
 	disableButtons() {
 		this._online.classList.remove(BUTTON_ACTIVE);
 		this._offline.classList.remove(BUTTON_ACTIVE);
+	}
+
+	set address(value: string) {
+		(this.container.elements.namedItem('address') as HTMLInputElement).value =
+			value;
+	}
+
+	set phone(value: string) {
+		(this.container.elements.namedItem('phone') as HTMLInputElement).value =
+			value;
+	}
+
+	set email(value: string) {
+		(this.container.elements.namedItem('email') as HTMLInputElement).value =
+			value;
 	}
 }

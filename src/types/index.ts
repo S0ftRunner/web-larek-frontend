@@ -7,7 +7,7 @@ export interface ICardItem extends Model<ICardItem> {
 	description: string;
 	image: string;
 	price?: number;
-	// selected: boolean;
+	selected?: boolean;
 }
 
 export interface ICardViewItem {
@@ -17,6 +17,7 @@ export interface ICardViewItem {
 	image: string;
 	price?: number;
 	index?: number;
+	selected?: boolean;
 }
 
 
@@ -46,7 +47,7 @@ export interface IAppState {
 	order: IOrderModel;
 	setPreview: (item: ICardItem) => void;
 	addToBasket: (value: ICardItem) => void;
-	setOrderField: (field: keyof IOrderForm, value: string) => void;
+	setOrderField: (field: keyof IOrderModel, value: string) => void;
 	validateContacts: () => boolean;
 	validateOrder: () => boolean;
 	clearBaslet: () => void;
@@ -59,18 +60,27 @@ export interface IContacts {
 	phone: string;
 }
 
-export interface IOrderForm {
-	payment: string;
-	address: string;
-	email: string;
-	phone: string;
-}
+// export interface IOrderForm {
+// 	payment: string;
+// 	address: string;
+// 	email: string;
+// 	phone: string;
+// }
 
 export interface IOrderModel {
 	payment: string;
 	address: string;
 	email: string;
 	phone: string;
+}
+
+export interface IFinalOrder {
+	payment: string;
+	address: string;
+	email: string;
+	phone: string;
+	total: number;
+	items: string[];
 }
 
 export interface IForm {

@@ -17,19 +17,15 @@ export class BasketView extends Component<IBasketView> {
 
 		if (this._button) {
 			this._button.addEventListener('click', () => {
-				events.emit('order:open');
+				this.events.emit('order:open');
 			});
 		}
 		this.items = [];
 	}
 
 	set items(items: HTMLElement[]) {
-		if (items.length) {
-			this._list.replaceChildren(...items);
-			this._button.disabled = false;
-		} else {
-			this._button.disabled = true;
-		}
+		this._list.replaceChildren(...items);
+		this._button.disabled = items.length ? false : true;
 	}
 
 	set total(value: number) {
@@ -48,4 +44,6 @@ export class BasketView extends Component<IBasketView> {
 	disableButton() {
 		this._button.disabled = true;
 	}
+
+
 }

@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 
 import { Api, ApiListResponse } from './components/base/api';
-import { ApiResponse, ICardItem, IContacts, IOrderForm } from './types/index';
+import { ApiResponse, ICardItem, IOrderModel} from './types/index';
 import { AppState } from './components/AppState';
 import { cloneTemplate, ensureElement, createElement } from './utils/utils';
 import { EventEmitter } from './components/base/events';
@@ -29,6 +29,8 @@ const api = new Api(API_URL);
 const page = new Page(document.body, events);
 
 const appData = new AppState({}, events);
+
+console.log(appData.order.address);
 
 const basket = new BasketView(cloneTemplate(basketTemplate), events);
 
@@ -89,19 +91,21 @@ events.on('preview:changed', (item: ICardItem) => {
 			title: item.title,
 			image: item.image,
 			price: item.price,
+			selected: item.selected,
 		}),
 	});
 });
 
 events.on('card:toBasket', (item: ICardItem) => {
+	item.selected = true;
 	appData.addToBasket(item);
-	
 	page.basketCounter = appData.basketTotalItems;
 	modal.close();
 });
 
-events.on('basket:open', () => {
+events.on('basket:open', () => { 
 	const basketItems = appData.basket.map((item, idx) => {
+		console.log(item);
 		const basketItem = new CardBasketItem(
 			'card',
 			cloneTemplate(cardBasketTemplate),
@@ -129,6 +133,7 @@ events.on('basket:open', () => {
 
 events.on('basket:delete', (item: ICardItem) => {
 	appData.deleteItemFromBasket(item.id);
+	item.selected = false;
 	page.basketCounter = appData.basketTotalItems;
 	basket.total = appData.basketTotalCost;
 	basket.renderNewIndexes();
@@ -140,14 +145,14 @@ events.on('basket:delete', (item: ICardItem) => {
 events.on('order:open', () => {
 	modal.render({
 		content: order.render({
-			address: '',
+			address: appData.order.address,
 			valid: false,
 			errors: [],
 		}),
 	});
 });
 
-events.on('formErrorsOrder:change', (errors: Partial<IOrderForm>) => {
+events.on('formErrorsOrder:change', (errors: Partial<IOrderModel>) => {
 	const { payment, address } = errors;
 	order.valid = !payment && !address;
 	order.errors = Object.values({ payment, address })
@@ -155,7 +160,7 @@ events.on('formErrorsOrder:change', (errors: Partial<IOrderForm>) => {
 		.join('; ');
 });
 
-events.on('formErrorsContacts:change', (errors: Partial<IOrderForm>) => {
+events.on('formErrorsContacts:change', (errors: Partial<IOrderModel>) => {
 	const { email, phone } = errors;
 	contacts.valid = !email && !phone;
 	contacts.errors = Object.values({ phone, email })
@@ -165,7 +170,7 @@ events.on('formErrorsContacts:change', (errors: Partial<IOrderForm>) => {
 
 events.on(
 	'orderInput:change',
-	(data: { field: keyof IOrderForm; value: string }) => {
+	(data: { field: keyof IOrderModel; value: string }) => {
 		appData.setOrderField(data.field, data.value);
 	}
 );
@@ -173,6 +178,8 @@ events.on(
 events.on('order:submit', () => {
 	modal.render({
 		content: contacts.render({
+			phone: appData.order.phone,
+			email: appData.order.email,
 			valid: false,
 			errors: [],
 		}),
@@ -181,13 +188,14 @@ events.on('order:submit', () => {
 
 events.on('contacts:submit', () => {
 	api
-		.post('/order', appData.order)
+		.post('/order', appData.makeOrder())
 		.then((res) => {
 			events.emit('order:success', res);
 			appData.clearBasket();
 			appData.refreshOrder();
 			order.disableButtons();
 			page.basketCounter = 0;
+			appData.resetSelected();
 		})
 		.catch((err) => {
 			console.log(err);
@@ -208,5 +216,6 @@ events.on('modal:open', () => {
 
 events.on('modal:close', () => {
 	appData.refreshOrder();
+	order.disableButtons();
 	page.locked = false;
 });

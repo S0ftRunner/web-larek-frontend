@@ -16,7 +16,7 @@ export class Card extends Component<ICardViewItem> {
 	protected _image?: HTMLImageElement;
 	protected _price: HTMLElement;
 	protected _button?: HTMLButtonElement;
-
+	
 	constructor(
 		protected blockName: string,
 		container: HTMLElement,
@@ -62,6 +62,12 @@ export class Card extends Component<ICardViewItem> {
 	set category(value: Category) {
 		this._category.textContent = value;
 		this._category.classList.add(CategoryMap[value]);
+	}
+
+	set selected(value: boolean) {
+		if (!this._button.disabled) {
+			this._button.disabled = value;
+		}
 	}
 }
 

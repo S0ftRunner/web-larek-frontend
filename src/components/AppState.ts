@@ -2,7 +2,7 @@ import {
 	FormErrors,
 	IAppState,
 	ICardItem,
-	IOrderForm,
+	IFinalOrder,
 	IOrderModel,
 } from '../types';
 import { Model } from './base/Model';
@@ -18,8 +18,6 @@ export class AppState extends Model<IAppState> {
 		email: '',
 	};
 
-	protected finalOrder = {};
-
 	protected formErrors: FormErrors = {};
 
 	set items(items: ICardItem[]) {
@@ -31,6 +29,10 @@ export class AppState extends Model<IAppState> {
 		return this._items;
 	}
 
+	protected getIds(): string[] {
+		return this._basket.map(item => item.id);
+	}
+
 	setPreview(item: ICardItem) {
 		this._preview = item.id;
 		this.emitChanges('preview:changed', item);
@@ -40,7 +42,7 @@ export class AppState extends Model<IAppState> {
 		this._basket.push(value);
 	}
 
-	setOrderField(field: keyof IOrderForm, value: string) {
+	setOrderField(field: keyof IOrderModel, value: string) {
 		this.order[field] = value;
 
 		if (this.validateContacts()) {
@@ -104,6 +106,26 @@ export class AppState extends Model<IAppState> {
 
 	deleteItemFromBasket(id: string) {
 		this._basket = this._basket.filter((item) => item.id !== id);
+	}
+
+
+	makeOrder(): IFinalOrder {
+		const orderObject: IFinalOrder = {
+			address: this.order.address,
+			payment: this.order.payment,
+			phone: this.order.phone,
+			email: this.order.email,
+			items: this.getIds(),
+			total: this.basketTotalCost,
+		}
+
+		return orderObject;
+	}
+
+	resetSelected() {
+		this._items.forEach(item => {
+			item.selected = false;
+		})
 	}
 
 	refreshOrder() {
