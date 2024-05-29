@@ -104,25 +104,9 @@ events.on('card:toBasket', (item: ICardItem) => {
 });
 
 events.on('basket:open', () => {
-	const basketItems = appData.basket.map((item, idx) => {
-		console.log(item);
-		const basketItem = new CardBasketItem(
-			'card',
-			cloneTemplate(cardBasketTemplate),
-			{
-				onClick: () => {
-					events.emit('basket:delete', item);
-				},
-			}
-		);
 
-		return basketItem.render({
-			price: item.price,
-			title: item.title,
-			description: item.description,
-			index: idx + 1,
-		});
-	});
+	const basketItems = renderBasketItems();
+
 	modal.render({
 		content: basket.render({
 			items: basketItems,
@@ -137,26 +121,8 @@ events.on('basket:delete', (item: ICardItem) => {
 	page.basketCounter = appData.basketTotalItems;
 	basket.total = appData.basketTotalCost;
 
-	const basketItems = appData.basket.map((item, idx) => {
-		console.log(item);
-		const basketItem = new CardBasketItem(
-			'card',
-			cloneTemplate(cardBasketTemplate),
-			{
-				onClick: () => {
-					events.emit('basket:delete', item);
-				},
-			}
-		);
+	const basketItems = renderBasketItems();
 
-		return basketItem.render({
-			price: item.price,
-			title: item.title,
-			description: item.description,
-			index: idx + 1,
-		});
-
-	});
 	basket.items = basketItems;
 
 
@@ -245,3 +211,26 @@ events.on('modal:close', () => {
 
 
 
+function renderBasketItems(): HTMLElement[] {
+	const basketItems = appData.basket.map((item, idx) => {
+		console.log(item);
+		const basketItem = new CardBasketItem(
+			'card',
+			cloneTemplate(cardBasketTemplate),
+			{
+				onClick: () => {
+					events.emit('basket:delete', item);
+				},
+			}
+		);
+
+		return basketItem.render({
+			price: item.price,
+			title: item.title,
+			description: item.description,
+			index: idx + 1,
+		});
+	});
+
+	return basketItems;
+}
